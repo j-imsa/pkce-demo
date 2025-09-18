@@ -1,0 +1,53 @@
+# Top-level OS/editor cruft
+.DS_Store
+Thumbs.db
+*.iml
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment files (keep secrets out of VCS)
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+spring.log
+
+# Frontend (React)
+# (applies if placed under /Frontend or any React app folder)
+node_modules/
+coverage/
+build/
+dist/
+.cache/
+.parcel-cache/
+.eslintcache
+
+# Backend (Spring / Java)
+# Maven / Gradle build outputs
+target/
+build/
+out/
+.gradle/
+
+# Eclipse/STS artifacts (if ever used)
+.classpath
+.project
+.settings/
+bin/
+
+# Local database files
+*.h2.db
+*.mv.db
+
+# Spring profiles local overrides (keep real configs committed as needed)
+application-*.properties.local
+application-*.yml.local
