@@ -7,7 +7,7 @@ This project demonstrates OAuth 2.1 PKCE (Proof Key for Code Exchange) authentic
 - PostgreSQL (data store)
 
 The repository is organized as a two-module setup:
-- Frontend: React single-page application that initiates the PKCE flow and consumes the secured API.
+- Frontend: React a single-page application that initiates the PKCE flow and consumes the secured API.
 - Backend: Spring-based REST API secured with OAuth 2.1 / OpenID Connect, validating tokens from Keycloak and persisting data in PostgreSQL.
 
 ## What you'll learn

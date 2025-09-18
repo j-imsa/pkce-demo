@@ -25,7 +25,6 @@ spring.log
 # (applies if placed under /Frontend or any React app folder)
 node_modules/
 coverage/
-build/
 dist/
 .cache/
 .parcel-cache/
