@@ -1,0 +1,50 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: pkce_postgres
+    restart: unless-stopped
+    environment:
+      # Credentials must be saved in the Vault Service
+      POSTGRES_USER: postgres_admin
+      POSTGRES_PASSWORD: postgres_admin_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./db-init:/docker-entrypoint-initdb.d:ro
+    networks:
+      - pkce_net
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.3.4
+    container_name: pkce_keycloak
+    restart: unless-stopped
+    command: start-dev
+    environment:
+      # Credentials must be saved in the Vault Service
+      # There are temporary admin credentials:
+      KC_BOOTSTRAP_ADMIN_USERNAME: keycloak_admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: keycloak_admin_password
+      # DB config
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak_db
+      KC_DB_USERNAME: keycloak_user
+      KC_DB_PASSWORD: keycloak_password
+      # host settings for dev;
+      KC_HOSTNAME: localhost
+      KC_HOSTNAME_STRICT: "false"
+      KC_HOSTNAME_STRICT_HTTPS: "false"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    volumes:
+      - keycloak_data:/opt/keycloak/data
+    networks:
+      - pkce_net
+
+volumes:
+  postgres_data:
+  keycloak_data:
+
+networks:
+  pkce_net:
+    driver: bridge
