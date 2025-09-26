@@ -1,9 +1,10 @@
+import {useEffect} from "react";
+import {useNavigate} from "react-router-dom";
+
 export const LogoutPage = () => {
-
-
-    return (
-        <div>
-            Logout Page
-        </div>
-    )
+    const navigate = useNavigate();
+    useEffect(() => {
+        navigate("/");
+    }, []);
+    return <p>Logging out...</p>;
 }
