@@ -48,4 +48,20 @@ The repository is organized as a two-module setup:
 - Step 2:
     - [x] Keycloak
     - [x] Keycloak user
+    - [x] Keycloak realm
+    - [x] Keycloak client
+    - [x] Keycloak pkce/config
 
+- Step 3:
+    - [X] React Auth libs
+    - [X] Impl basic `PKCE` flow
+    - [X] Single Tab strategy
+    - [ ] Update login UI in the `Keycloak`
+
+- Step 4:
+    - [ ] Spring App (Resource Server)
+    - [ ] Secure APIs
+    - [ ] Signup API
+
+- Step 5:
+    - [ ] BFF scenario
