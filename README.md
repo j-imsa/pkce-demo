@@ -56,7 +56,9 @@ The repository is organized as a two-module setup:
     - [X] React Auth libs
     - [X] Impl basic `PKCE` flow
     - [X] Single Tab strategy
-    - [ ] Update login UI in the `Keycloak`
+    - [X] Update login UI in the `Keycloak`
+      - [Keycloakify](https://github.com/keycloakify/keycloakify)
+      - [Apache FreeMarker](https://freemarker.apache.org/index.html)
 
 - Step 4:
     - [ ] Spring App (Resource Server)
