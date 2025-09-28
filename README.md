@@ -57,8 +57,15 @@ The repository is organized as a two-module setup:
     - [X] Impl basic `PKCE` flow
     - [X] Single Tab strategy
     - [X] Update login UI in the `Keycloak`
-      - [Keycloakify](https://github.com/keycloakify/keycloakify)
-      - [Apache FreeMarker](https://freemarker.apache.org/index.html)
+        - [X] Option 1: `using Keycloakify starter`
+            - Simple to integrate
+            - Limited customization
+        - [ ] Option 2: `using Keycloakify into our code-base`
+            - Harder to integrate
+            - Quick customization
+        - [X] Documents:
+            - [Keycloakify](https://github.com/keycloakify/keycloakify)
+            - [Apache FreeMarker](https://freemarker.apache.org/index.html)
 
 - Step 4:
     - [ ] Spring App (Resource Server)
