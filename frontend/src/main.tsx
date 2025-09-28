@@ -1,21 +1,36 @@
-import {createRoot} from 'react-dom/client'
-import {AppRouter} from "./routing/AppRouter.tsx";
-import {AuthProvider} from "react-oidc-context";
-import './index.css'
+import {createRoot} from "react-dom/client";
+import {StrictMode, lazy, Suspense} from "react";
+import {KcPage, type KcContext} from "./keycloak-theme/kc.gen";
 
-const oidcConfig = {
-    authority: "http://localhost:8080/realms/pkce-demo",
-    client_id: "my-react-app",
-    redirect_uri: window.location.origin + "/dashboard",
-    post_logout_redirect_uri: window.location.origin + "/logout",
-    response_type: "code",
-    code_challenge_method: "S256",
-    scope: "openid profile email offline_access",
-    automaticSilentRenew: true,
-};
+const AppEntrypoint = lazy(() => import("./main.app").then(m => ({default: m.default})));
 
-createRoot(document.getElementById('root')!).render(
-        <AuthProvider {...oidcConfig}>
-            <AppRouter/>
-        </AuthProvider>
-)
+// The following block can be uncommented to test a specific page with `yarn dev`
+// Don't forget to comment back or your bundle size will increase
+/*
+import { getKcContextMock } from "./keycloak-theme/login/KcPageStory";
+
+if (import.meta.env.DEV) {
+    window.kcContext = getKcContextMock({
+        pageId: "register.ftl",
+        overrides: {}
+    });
+}
+*/
+
+createRoot(document.getElementById("root")!).render(
+    <StrictMode>
+        {window.kcContext ? (
+            <KcPage kcContext={window.kcContext}/>
+        ) : (
+            <Suspense>
+                <AppEntrypoint/>
+            </Suspense>
+        )}
+    </StrictMode>
+);
+
+declare global {
+    interface Window {
+        kcContext?: KcContext;
+    }
+}
