@@ -50,3 +50,6 @@ bin/
 # Spring profiles local overrides (keep real configs committed as needed)
 application-*.properties.local
 application-*.yml.local
+
+# Keycloakify
+.storybook/
