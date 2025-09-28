@@ -10,7 +10,9 @@
     "lint:fix": "bun run eslint . --fix",
     "preview": "bun run vite preview",
     "type-check": "bun run tsc --noEmit",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "build-keycloak-theme": "npm run build && keycloakify build",
+    "storybook": "storybook dev -p 6006"
   },
   "dependencies": {
     "@types/node": "^24.3.0",
