@@ -1,13 +1,14 @@
 import {useAuth} from "react-oidc-context";
-import {useState} from "react";
-import api from "../api/Api.tsx";
+import { useState} from "react";
 import {useRoles} from "../hooks/useRoles.tsx";
+import {useAuthorizedApi} from "../hooks/useAuthorizedApi.tsx";
 
 export const DashboardPage = () => {
     const auth = useAuth();
     const {roles, isAdmin, isCreator, isBasic, hasRole} = useRoles();
     const [list, setList] = useState<string[]>([]);
     const [loading, setLoading] = useState(false);
+    const api = useAuthorizedApi();
 
     const fillList = async () => {
         try {
