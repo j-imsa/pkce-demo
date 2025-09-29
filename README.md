@@ -58,19 +58,21 @@ The repository is organized as a two-module setup:
     - [X] Single Tab strategy
     - [X] Update login UI in the `Keycloak`
         - [X] Option 1: `using Keycloakify starter`
-          - [Link](https://docs.keycloakify.dev/)
-          - Simple to integrate
-          - Limited customization
+            - [Link](https://docs.keycloakify.dev/)
+            - Simple to integrate
+            - Limited customization
         - [ ] Option 2: `using Keycloakify into our code-base`
-          - [Link](https://docs.keycloakify.dev/integration-keycloakify-in-your-codebase/vite)
-          - Harder to integrate
-          - Quick customization
+            - [Link](https://docs.keycloakify.dev/integration-keycloakify-in-your-codebase/vite)
+            - Harder to integrate
+            - Quick customization
         - [X] Documents:
-          - [Keycloakify](https://github.com/keycloakify/keycloakify)
-          - [Apache FreeMarker](https://freemarker.apache.org/index.html)
+            - [Keycloakify](https://github.com/keycloakify/keycloakify)
+            - [Apache FreeMarker](https://freemarker.apache.org/index.html)
 
 - Step 4:
-    - [ ] Spring App (Resource Server)
+    - [X] Spring App (Resource Server)
+        - [X] Realm Role
+        - [ ] App Access
     - [ ] Secure APIs
     - [ ] Signup API
 
