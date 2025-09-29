@@ -12,11 +12,13 @@ export const ProtectedRoute = ({children}: PropsWithChildren) => {
         }
     }, [auth.isLoading, auth.isAuthenticated]);
 
-    if (auth.isLoading) return <div>Loading...</div>;
+    if (auth.isLoading) return <div className="min-h-dvh flex items-center justify-center bg-white text-black">
+        <span className="text-sm">Loading...</span>
+    </div>;
 
-    if (!auth.isAuthenticated) {
-        return <div>Redirecting to login...</div>;
-    }
+    if (!auth.isAuthenticated) return <div className="min-h-dvh flex items-center justify-center bg-white text-black">
+        <span className="text-sm">Redirecting to login...</span>
+    </div>;
 
     return children;
 };

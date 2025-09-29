@@ -5,6 +5,10 @@ export const LogoutPage = () => {
     const navigate = useNavigate();
     useEffect(() => {
         navigate("/");
-    }, []);
-    return <p>Logging out...</p>;
+    }, [navigate]);
+    return (
+        <div className="min-h-dvh flex items-center justify-center bg-white text-black">
+            <p className="text-sm">Logging out…</p>
+        </div>
+    );
 }

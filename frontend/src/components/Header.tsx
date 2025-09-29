@@ -21,12 +21,6 @@ export const Header = () => {
                         </button>
                     ) : (
                         <div className="flex items-center gap-3">
-                            <Link
-                                to="/dashboard"
-                                className="h-9 px-4 inline-flex items-center justify-center border border-black hover:bg-black hover:text-white transition-colors"
-                            >
-                                Dashboard
-                            </Link>
                             <button
                                 type="button"
                                 onClick={() => void auth.signoutRedirect()}
