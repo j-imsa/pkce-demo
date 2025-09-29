@@ -1,1 +1,16 @@
 @import "tailwindcss";
+
+/* Apply Roboto globally with system-ui fallbacks */
+:root {
+    --font-sans: "Roboto", system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+html, body, #root {
+    height: 100%;
+}
+
+body {
+    font-family: var(--font-sans);
+    color: #000;
+    background-color: #fff;
+}
