@@ -53,3 +53,9 @@ application-*.yml.local
 
 # Keycloakify
 .storybook/
+
+# Backend
+.mvn
+mvnw
+mvnw.cmd
+target/
