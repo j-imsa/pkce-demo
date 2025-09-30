@@ -107,7 +107,7 @@ The repository is organized as a two-module setup:
       - Caching Strategy
       - Audit Logging
       - API Design
-    - [ ] Signup API
+    - [X] Signup API
 
 - Step 5:
     - [ ] BFF scenario
