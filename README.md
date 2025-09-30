@@ -61,7 +61,7 @@ The repository is organized as a two-module setup:
             - [Link](https://docs.keycloakify.dev/)
             - Simple to integrate
             - Limited customization
-        - [ ] Option 2: `using Keycloakify into our code-base`
+        - [X] Option 2: `using Keycloakify into our code-base`
             - [Link](https://docs.keycloakify.dev/integration-keycloakify-in-your-codebase/vite)
             - Harder to integrate
             - Quick customization
@@ -72,8 +72,41 @@ The repository is organized as a two-module setup:
 - Step 4:
     - [X] Spring App (Resource Server)
         - [X] Realm Role
-        - [ ] App Access
-    - [ ] Secure APIs
+        - [X] App Access
+            ```java
+            @RestController
+            @RequestMapping("/api/workspaces")
+            public class WorkspaceController {
+                
+                // Level 1: Keycloak role check (only Creators and Admins can create workspaces)
+                @PostMapping
+                @PreAuthorize("hasAnyRole('CREATOR', 'ADMIN')")
+                public ResponseEntity<?> createWorkspace(@RequestBody WorkspaceDto dto) {
+                    // Business logic
+                }
+                
+                // Level 2: Workspace-level access check (only Owners can delete)
+                @DeleteMapping("/{workspaceId}")
+                @RequireWorkspaceAccess(WorkspaceAccess.OWNER)
+                public ResponseEntity<?> deleteWorkspace(@PathVariable String workspaceId) {
+                    // Business logic
+                }
+                
+                // Combined: Must be Admin OR Creator role + Editor/Owner in workspace
+                @PutMapping("/{workspaceId}/settings")
+                @PreAuthorize("hasAnyRole('CREATOR', 'ADMIN')")
+                @RequireWorkspaceAccess({WorkspaceAccess.OWNER, WorkspaceAccess.EDITOR})
+                public ResponseEntity<?> updateSettings(
+                        @PathVariable String workspaceId,
+                        @RequestBody SettingsDto settings) {
+                    // Business logic
+                }
+            }
+            ```
+    - [X] Secure APIs
+      - Caching Strategy
+      - Audit Logging
+      - API Design
     - [ ] Signup API
 
 - Step 5:
