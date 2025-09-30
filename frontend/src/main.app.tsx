@@ -9,8 +9,12 @@ const oidcConfig = {
     post_logout_redirect_uri: window.location.origin + "/logout",
     response_type: "code",
     code_challenge_method: "S256",
-    scope: "openid profile email offline_access",
+    scope: "openid profile email offline_access", // Important: offline_access for refresh token
     automaticSilentRenew: true,
+    loadUserInfo: true,
+    // Token refresh settings
+    accessTokenExpiringNotificationTimeInSeconds: 60, // Notify 60 seconds before expiry
+    monitorSession: true, // Monitor session changes
 };
 
 export default function AppEntrypoint() {
