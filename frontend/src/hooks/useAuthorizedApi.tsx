@@ -1,72 +1,136 @@
+import {useAuth} from "react-oidc-context";
+import {api} from "../api/Api.tsx";
+import {useEffect, useRef, useCallback} from "react";
+import type {AxiosInstance, AxiosHeaders} from "axios";
 
-import { useAuth } from "react-oidc-context";
-import { api } from "../api/Api.tsx";
-import { useEffect } from "react";
+type AxiosRequestConfigWithRetry = import("axios").InternalAxiosRequestConfig & {
+    _retry?: boolean;
+};
 
-export function useAuthorizedApi() {
+export function useAuthorizedApi(): AxiosInstance {
     const auth = useAuth();
+    const refreshPromiseRef = useRef<Promise<void> | null>(null);
+    const interceptorsSetRef = useRef(false);
+
+    // Memoize the token refresh logic
+    const refreshTokenIfNeeded = useCallback(async (): Promise<void> => {
+        if (!auth.user || auth.isLoading) {
+            return;
+        }
+
+        // Check if token expires within 60 seconds
+        const expiresAt = auth.user.expires_at;
+        if (!expiresAt || expiresAt > Math.floor(Date.now() / 1000) + 60) {
+            return; // Token is still valid
+        }
+
+        // Prevent concurrent refresh attempts
+        if (refreshPromiseRef.current) {
+            return refreshPromiseRef.current;
+        }
+
+        refreshPromiseRef.current = auth.signinSilent()
+            .catch((error) => {
+                console.error('Silent token refresh failed:', error);
+                throw error;
+            })
+            .finally(() => {
+                refreshPromiseRef.current = null;
+            });
+
+        return refreshPromiseRef.current;
+    }, [auth.user?.expires_at, auth.signinSilent, auth.isLoading, auth.user]);
 
     useEffect(() => {
-        // Request interceptor - add token to requests
+        // Only set up interceptors once
+        if (interceptorsSetRef.current) {
+            return;
+        }
+
+        interceptorsSetRef.current = true;
+
+        // Request interceptor
         const requestInterceptor = api.interceptors.request.use(
             async (config) => {
-                // Check if token is about to expire (within 60 seconds)
-                const isExpired = auth.user && auth.user.expires_at
-                    ? auth.user.expires_at < (Date.now() / 1000) + 60
-                    : false;
-
-                if (isExpired && !auth.isLoading) {
-                    // Try to refresh the token
-                    try {
-                        await auth.signinSilent();
-                    } catch (error) {
-                        console.error('Failed to refresh token:', error);
-                        // Token refresh failed, redirect to login
-                        await auth.signinRedirect();
-                        return Promise.reject(error);
+                try {
+                    // Try to refresh token if needed
+                    if (!auth.isLoading) {
+                        await refreshTokenIfNeeded();
                     }
+                } catch (error) {
+                    console.warn('Token refresh in request interceptor failed:', error);
+                    // Continue with existing token if refresh fails
                 }
 
-                // Add the token to the request
-                if (auth.user?.access_token) {
-                    config.headers.Authorization = `Bearer ${auth.user.access_token}`;
+                // Ensure headers object exists and is properly typed
+                if (!config.headers) {
+                    config.headers = new AxiosHeaders();
+                }
+
+                // Add authorization header if we have a token
+                const token = auth.user?.access_token;
+                if (token) {
+                    config.headers.set('Authorization', `Bearer ${token}`);
                 }
 
                 return config;
             },
-            (error) => {
-                return Promise.reject(error);
-            }
+            (error) => Promise.reject(error)
         );
 
-        // Response interceptor - handle 401 errors
+        // Response interceptor
         const responseInterceptor = api.interceptors.response.use(
             (response) => response,
             async (error) => {
-                if (error.response?.status === 401) {
-                    // Token expired, try to refresh
+                const originalRequest: AxiosRequestConfigWithRetry = error.config;
+
+                if (error.response?.status === 401 && originalRequest && !originalRequest._retry) {
+                    originalRequest._retry = true;
+
                     try {
-                        await auth.signinSilent();
-                        // Retry the original request with new token
-                        const config = error.config;
-                        config.headers.Authorization = `Bearer ${auth.user?.access_token}`;
-                        return api.request(config);
+                        // Try to refresh the token
+                        await refreshTokenIfNeeded();
+
+                        // Ensure headers object exists and is properly typed
+                        if (!originalRequest.headers) {
+                            originalRequest.headers = new AxiosHeaders();
+                        }
+
+                        // Update request with new token
+                        const newToken = auth.user?.access_token;
+                        if (newToken) {
+                            originalRequest.headers.set('Authorization', `Bearer ${newToken}`);
+                            // Retry the original request
+                            return api.request(originalRequest);
+                        }
                     } catch (refreshError) {
-                        // Refresh failed, redirect to login
-                        await auth.signinRedirect();
-                        return Promise.reject(refreshError);
+                        console.error('Token refresh failed on 401 response:', refreshError);
+
+                        // If refresh fails, redirect to login
+                        try {
+                            await auth.signinRedirect();
+                        } catch (redirectError) {
+                            console.error('Redirect to login failed:', redirectError);
+                        }
+
+                        // Use Error object instead of literal
+                        const authError = new Error('Authentication failed');
+                        authError.cause = refreshError;
+                        return Promise.reject(authError);
                     }
                 }
+
                 return Promise.reject(error);
             }
         );
 
-        // Cleanup interceptors
+        // Cleanup function
         return () => {
             api.interceptors.request.eject(requestInterceptor);
             api.interceptors.response.eject(responseInterceptor);
+            interceptorsSetRef.current = false;
         };
-    }, [auth]);
+    }, [auth.signinRedirect, refreshTokenIfNeeded, auth.user?.access_token]);
 
     return api;
 }
