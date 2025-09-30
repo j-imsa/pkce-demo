@@ -1,7 +1,9 @@
+
 import {useAuth} from "react-oidc-context";
 import { useState} from "react";
 import {useRoles} from "../hooks/useRoles.tsx";
 import {useAuthorizedApi} from "../hooks/useAuthorizedApi.tsx";
+import {UserManagement} from "../components/UserManagement.tsx";
 
 export const DashboardPage = () => {
     const auth = useAuth();
@@ -24,7 +26,7 @@ export const DashboardPage = () => {
 
     return (
         <div className="min-h-dvh bg-white text-black">
-            <div className="mx-auto w-full max-w-5xl px-4 py-10">
+            <div className="mx-auto w-full max-w-7xl px-4 py-10">
                 <header className="mb-8 border-b border-black pb-4">
                     <h1 className="text-2xl font-semibold">Dashboard (Protected)</h1>
                     <p className="mt-2 text-sm">
@@ -102,6 +104,9 @@ export const DashboardPage = () => {
                             </ul>
                         )}
                     </div>
+
+                    {/* User Management Section */}
+                    {isAdmin && <UserManagement />}
                 </section>
             </div>
         </div>
