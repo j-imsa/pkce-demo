@@ -1,8 +1,32 @@
 import {Link} from "react-router-dom";
 import {useAuth} from "react-oidc-context";
+import {useEffect} from "react";
 
 export const Header = () => {
     const auth = useAuth();
+
+    useEffect(() => {
+        // Event: Access token expiring (triggered based on accessTokenExpiringNotificationTimeInSeconds)
+        const removeExpiringListener = auth.events.addAccessTokenExpiring(() => {
+            console.log("⚠️ Access token is expiring soon! Attempting silent renew...");
+        });
+
+        // Event: User loaded (triggered when a new token is received, e.g., after refresh)
+        const removeLoadedListener = auth.events.addUserLoaded((user) => {
+            console.log("✅ User loaded. Token refreshed successfully!", user);
+        });
+
+        // Event: Silent renew error
+        const removeErrorListener = auth.events.addSilentRenewError((error) => {
+            console.error("❌ Silent renew failed:", error);
+        });
+
+        return () => {
+            removeExpiringListener();
+            removeLoadedListener();
+            removeErrorListener();
+        };
+    }, [auth.events]);
 
     return (
         <header className="w-full border-b border-black">

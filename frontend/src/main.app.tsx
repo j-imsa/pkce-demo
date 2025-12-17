@@ -1,20 +1,22 @@
 import {AppRouter} from "./routing/AppRouter.tsx";
 import {AuthProvider} from "react-oidc-context";
+import {WebStorageStateStore} from "oidc-client-ts";
 import './index.css'
 
 const oidcConfig = {
     authority: "http://localhost:8080/realms/pkce-demo",
     client_id: "my-react-app",
     redirect_uri: window.location.origin + "/dashboard",
+    silent_redirect_uri: window.location.origin + "/silent-renew.html",
     post_logout_redirect_uri: window.location.origin + "/logout",
     response_type: "code",
     code_challenge_method: "S256",
-    scope: "openid profile email offline_access", // Important: offline_access for refresh token
+    scope: "openid profile email",
     automaticSilentRenew: true,
     loadUserInfo: true,
-    // Token refresh settings
-    accessTokenExpiringNotificationTimeInSeconds: 60, // Notify 60 seconds before expiry
-    monitorSession: true, // Monitor session changes
+    accessTokenExpiringNotificationTimeInSeconds: 5,
+    monitorSession: true,
+    userStore: new WebStorageStateStore({ store: window.localStorage }),
 };
 
 export default function AppEntrypoint() {

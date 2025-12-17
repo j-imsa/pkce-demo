@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Silent Renew</title>
+</head>
+<body>
+<script src="https://unpkg.com/oidc-client-ts@3.3.0/dist/browser/oidc-client-ts.min.js"></script>
+<script>
+    if (window.oidc) {
+        var mgr = new window.oidc.UserManager({
+            authority: "http://localhost:8080/realms/pkce-demo",
+            client_id: "my-react-app",
+            // Ensure we read from the same storage as the main app
+            userStore: new window.oidc.WebStorageStateStore({ store: window.localStorage })
+        });
+
+        mgr.signinSilentCallback().catch(function (error) {
+            console.error('Silent renew error:', error);
+        });
+    } else {
+        console.error('oidc-client-ts script not loaded');
+    }
+</script>
+</body>
+</html>
