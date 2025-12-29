@@ -1,6 +1,6 @@
 import {AppRouter} from "./routing/AppRouter.tsx";
 import {AuthProvider} from "react-oidc-context";
-import {InMemoryWebStorage, WebStorageStateStore} from "oidc-client-ts";
+import {WebStorageStateStore} from "oidc-client-ts";
 import './index.css'
 
 const oidcConfig = {
@@ -16,7 +16,7 @@ const oidcConfig = {
     loadUserInfo: true,
     accessTokenExpiringNotificationTimeInSeconds: 5,
     monitorSession: true,
-    userStore: new WebStorageStateStore({ store: new InMemoryWebStorage() }),
+    userStore: new WebStorageStateStore({ store: globalThis.sessionStorage }),
 };
 
 export default function AppEntrypoint() {

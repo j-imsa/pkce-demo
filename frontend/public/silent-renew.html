@@ -11,7 +11,7 @@
         const mgr = new globalThis.oidc.UserManager({
             authority: "http://localhost:8080/realms/pkce-demo",
             client_id: "my-react-app",
-            userStore: new globalThis.oidc.WebStorageStateStore({store: new globalThis.oidc.InMemoryWebStorage()})
+            userStore: new globalThis.oidc.WebStorageStateStore({store: globalThis.sessionStorage})
         });
 
         try {
