@@ -6,18 +6,19 @@
 </head>
 <body>
 <script src="https://unpkg.com/oidc-client-ts@3.3.0/dist/browser/oidc-client-ts.min.js"></script>
-<script>
-    if (window.oidc) {
-        var mgr = new window.oidc.UserManager({
+<script type="module">
+    if (globalThis.oidc) {
+        const mgr = new globalThis.oidc.UserManager({
             authority: "http://localhost:8080/realms/pkce-demo",
             client_id: "my-react-app",
-            // Ensure we read from the same storage as the main app
-            userStore: new window.oidc.WebStorageStateStore({ store: window.localStorage })
+            userStore: new globalThis.oidc.WebStorageStateStore({store: new globalThis.oidc.InMemoryWebStorage()})
         });
 
-        mgr.signinSilentCallback().catch(function (error) {
+        try {
+            await mgr.signinSilentCallback();
+        } catch (error) {
             console.error('Silent renew error:', error);
-        });
+        }
     } else {
         console.error('oidc-client-ts script not loaded');
     }
